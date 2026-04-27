@@ -22,8 +22,8 @@ class VoiceEngine:
             import pyttsx3
 
             self.tts_engine = pyttsx3.init()
-            self._configure_tts()
             self._tts_available = True
+            self._configure_tts()
         except Exception:
             self._tts_available = False
 

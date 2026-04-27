@@ -77,7 +77,11 @@ class AIEngine:
     def set_api_key(self, api_key: str):
         """Update the OpenAI API key."""
         self.api_key = api_key
-        self._init_openai()
+        if self.api_key:
+            self._init_openai()
+        else:
+            self.client = None
+            self._openai_available = False
 
     def is_openai_available(self) -> bool:
         """Check if OpenAI API is configured and available."""
