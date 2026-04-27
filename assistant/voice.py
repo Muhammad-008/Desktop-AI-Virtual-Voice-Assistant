@@ -2,7 +2,6 @@
 
 import threading
 
-import pyttsx3
 import speech_recognition as sr
 
 
@@ -11,38 +10,66 @@ class VoiceEngine:
 
     def __init__(self):
         self.recognizer = sr.Recognizer()
-        self.tts_engine = pyttsx3.init()
-        self._configure_tts()
+        self.tts_engine = None
+        self._tts_available = False
         self._listening = False
         self._lock = threading.Lock()
+        self._init_tts()
+
+    def _init_tts(self):
+        """Initialize TTS engine with graceful fallback."""
+        try:
+            import pyttsx3
+
+            self.tts_engine = pyttsx3.init()
+            self._configure_tts()
+            self._tts_available = True
+        except Exception:
+            self._tts_available = False
 
     def _configure_tts(self):
         """Configure TTS engine settings."""
-        voices = self.tts_engine.getProperty("voices")
-        if voices:
-            self.tts_engine.setProperty("voice", voices[0].id)
-        self.tts_engine.setProperty("rate", 175)
-        self.tts_engine.setProperty("volume", 0.9)
+        if not self._tts_available:
+            return
+        try:
+            voices = self.tts_engine.getProperty("voices")
+            if voices:
+                self.tts_engine.setProperty("voice", voices[0].id)
+            self.tts_engine.setProperty("rate", 175)
+            self.tts_engine.setProperty("volume", 0.9)
+        except Exception:
+            pass
 
     def set_voice(self, index: int):
         """Set TTS voice by index."""
+        if not self._tts_available:
+            return
         voices = self.tts_engine.getProperty("voices")
         if 0 <= index < len(voices):
             self.tts_engine.setProperty("voice", voices[index].id)
 
     def set_rate(self, rate: int):
         """Set TTS speech rate."""
+        if not self._tts_available:
+            return
         self.tts_engine.setProperty("rate", rate)
 
     def set_volume(self, volume: float):
         """Set TTS volume (0.0 to 1.0)."""
+        if not self._tts_available:
+            return
         self.tts_engine.setProperty("volume", max(0.0, min(1.0, volume)))
 
     def speak(self, text: str):
         """Convert text to speech."""
+        if not self._tts_available:
+            return
         with self._lock:
-            self.tts_engine.say(text)
-            self.tts_engine.runAndWait()
+            try:
+                self.tts_engine.say(text)
+                self.tts_engine.runAndWait()
+            except Exception:
+                pass
 
     def speak_async(self, text: str, callback=None):
         """Speak text asynchronously."""
@@ -83,4 +110,6 @@ class VoiceEngine:
 
     def get_available_voices(self) -> list:
         """Return list of available TTS voices."""
+        if not self._tts_available:
+            return []
         return self.tts_engine.getProperty("voices")
