@@ -57,13 +57,13 @@ WINDOWS_APPS = {
     "powershell": ["powershell.exe"],
     "task manager": ["taskmgr.exe"],
     "control panel": ["control.exe"],
-    "settings": ["start", "ms-settings:"],
-    "word": ["start", "winword"],
-    "excel": ["start", "excel"],
-    "powerpoint": ["start", "powerpnt"],
-    "browser": ["start", "https://www.google.com"],
-    "chrome": ["start", "chrome"],
-    "edge": ["start", "msedge"],
+    "settings": ["cmd", "/c", "start", "", "ms-settings:"],
+    "word": ["cmd", "/c", "start", "", "winword"],
+    "excel": ["cmd", "/c", "start", "", "excel"],
+    "powerpoint": ["cmd", "/c", "start", "", "powerpnt"],
+    "browser": ["cmd", "/c", "start", "", "https://www.google.com"],
+    "chrome": ["cmd", "/c", "start", "", "chrome"],
+    "edge": ["cmd", "/c", "start", "", "msedge"],
 }
 
 MACOS_APPS = {
