@@ -59,7 +59,7 @@ def parse_weather_query(text: str) -> str:
     text_lower = text.lower()
     city = "London"
 
-    weather_keywords = ["weather in", "weather for", "weather at"]
+    weather_keywords = ["weather in", "weather for", "weather at", "temperature in", "temperature for", "temperature at", "forecast in", "forecast for", "forecast at"]
     for keyword in weather_keywords:
         if keyword in text_lower:
             idx = text_lower.index(keyword) + len(keyword)

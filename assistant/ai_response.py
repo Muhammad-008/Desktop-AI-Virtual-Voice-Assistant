@@ -134,7 +134,8 @@ class AIEngine:
             )
             return reply
         except Exception:
-            self.conversation_history.pop()
+            if self.conversation_history:
+                self.conversation_history.pop()
             return self._get_fallback_response(user_input)
 
     def clear_history(self):
