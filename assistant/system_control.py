@@ -32,9 +32,8 @@ def set_volume(level: int) -> str:
                 check=True,
             )
         elif SYSTEM == "darwin":
-            vol = round(level * 7 / 100)
             subprocess.run(
-                ["osascript", "-e", f"set volume output volume {vol}"],
+                ["osascript", "-e", f"set volume output volume {level}"],
                 capture_output=True,
                 check=True,
             )
@@ -255,16 +254,16 @@ def parse_system_command(text: str) -> str:
             return set_volume(int(numbers[0]))
         return "Please specify a volume level (0-100)."
 
-    if "shutdown" in text_lower or "shut down" in text_lower:
-        return "Are you sure you want to shutdown? Say 'confirm shutdown' to proceed."
-
-    if "restart" in text_lower or "reboot" in text_lower:
-        return "Are you sure you want to restart? Say 'confirm restart' to proceed."
-
     if "confirm shutdown" in text_lower:
         return shutdown_system()
 
     if "confirm restart" in text_lower:
         return restart_system()
+
+    if "shutdown" in text_lower or "shut down" in text_lower:
+        return "Are you sure you want to shutdown? Say 'confirm shutdown' to proceed."
+
+    if "restart" in text_lower or "reboot" in text_lower:
+        return "Are you sure you want to restart? Say 'confirm restart' to proceed."
 
     return ""

@@ -142,6 +142,8 @@ class AssistantGUI(QMainWindow):
 
     response_signal = pyqtSignal(str, str)
     status_signal = pyqtSignal(str)
+    mic_reset_signal = pyqtSignal()
+    voice_input_signal = pyqtSignal(str)
 
     def __init__(self):
         super().__init__()
@@ -151,6 +153,8 @@ class AssistantGUI(QMainWindow):
 
         self.response_signal.connect(self._display_message)
         self.status_signal.connect(self._update_status)
+        self.mic_reset_signal.connect(self._reset_mic_button)
+        self.voice_input_signal.connect(self._process_input)
 
         self._init_ui()
         self._init_menu()
@@ -370,12 +374,10 @@ class AssistantGUI(QMainWindow):
         def _listen():
             text = self.voice_engine.listen(timeout=8, phrase_time_limit=15)
             self._listening = False
-            self.mic_button.setText("\U0001F3A4")
-            self.mic_button.setProperty("listening", "false")
-            self.mic_button.setStyle(self.mic_button.style())
+            self.mic_reset_signal.emit()
 
             if text and not text.startswith("[error]"):
-                self._process_input(text)
+                self.voice_input_signal.emit(text)
             elif text.startswith("[error]"):
                 self.response_signal.emit(text, "assistant")
                 self.status_signal.emit("Error")
@@ -384,6 +386,12 @@ class AssistantGUI(QMainWindow):
 
         thread = threading.Thread(target=_listen, daemon=True)
         thread.start()
+
+    def _reset_mic_button(self):
+        """Reset mic button state (called on main thread via signal)."""
+        self.mic_button.setText("\U0001F3A4")
+        self.mic_button.setProperty("listening", "false")
+        self.mic_button.setStyle(self.mic_button.style())
 
     def _clear_chat(self):
         """Clear the chat display."""
