@@ -372,7 +372,14 @@ class AssistantGUI(QMainWindow):
         self.status_signal.emit("Listening...")
 
         def _listen():
-            text = self.voice_engine.listen(timeout=8, phrase_time_limit=15)
+            try:
+                text = self.voice_engine.listen(timeout=8, phrase_time_limit=15)
+            except Exception as e:
+                self._listening = False
+                self.mic_reset_signal.emit()
+                self.response_signal.emit(f"[error] Microphone error: {e}", "assistant")
+                self.status_signal.emit("Error")
+                return
             self._listening = False
             self.mic_reset_signal.emit()
 

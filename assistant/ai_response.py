@@ -133,8 +133,9 @@ class AIEngine:
                 {"role": "assistant", "content": reply}
             )
             return reply
-        except Exception as e:
-            return f"OpenAI error: {e}. Using fallback."
+        except Exception:
+            self.conversation_history.pop()
+            return self._get_fallback_response(user_input)
 
     def clear_history(self):
         """Clear conversation history."""
