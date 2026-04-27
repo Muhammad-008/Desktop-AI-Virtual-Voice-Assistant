@@ -314,7 +314,7 @@ class AssistantGUI(QMainWindow):
             color = "#4caf50"
             prefix = "Assistant"
 
-        escaped_text = text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+        escaped_text = text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\n", "<br>")
         html = (
             f'<div style="margin: 5px 0;">'
             f'<span style="color: #666; font-size: 11px;">[{timestamp}]</span> '

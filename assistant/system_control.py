@@ -3,6 +3,7 @@
 import os
 import platform
 import subprocess
+from datetime import datetime
 
 SYSTEM = platform.system().lower()
 
@@ -198,7 +199,7 @@ def take_screenshot() -> str:
     """Take a screenshot and save to desktop."""
     try:
         home = os.path.expanduser("~")
-        filename = f"screenshot_{platform.node()}.png"
+        filename = f"screenshot_{datetime.now().strftime('%Y%m%d_%H%M%S')}.png"
         filepath = os.path.join(home, "Desktop", filename)
 
         if SYSTEM == "linux":
